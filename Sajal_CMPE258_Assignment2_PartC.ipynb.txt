@@ -1,0 +1,731 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "provenance": []
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "source": [
+        "# Part C: Code Interpretter\n",
+        "\n"
+      ],
+      "metadata": {
+        "id": "IwwTF8yDVeG9"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "## Assignment Description\n",
+        "In this assignment, we are tasked with replicating a series of experiments conducted with closed and open-source Language Model Models (LLMs) as presented in the references section.\n",
+        "\n",
+        "Your primary objective is to replicate the experiments and modify them to perform alternative tasks. Instead of using the provided SQL dataset, you will be utilizing different datasets available at [Hugging Face](https://huggingface.co/knowrohit07) to demonstrate your adaptability and creativity.\n",
+        "\n",
+        "This portion is for the Tokenization portion of the assignment.\n",
+        "\n",
+        "#### Tasks:\n",
+        "1. Reproduce the experiments showcased in the provided YouTube videos, ensuring that you implement all aspects such as prompt-based generation, fine-tuning, Retrieval-Augmented Generation (RAG), local interpreter, function calling, and llama.cpp CPU inference.\n",
+        "\n",
+        "2. Creatively adapt the Colab notebooks from the YouTube videos to highlight innovative use cases and applications of LLMs.\n",
+        "\n",
+        "3. If necessary, make the required adjustments to the Colab notebooks to ensure they function correctly. Document these modifications in detail.\n",
+        "\n",
+        "4. Produce a demonstration video that showcases the functionality of your modified Colab notebooks and your innovative use cases. Ensure the video is linked in your documentation.\n",
+        "\n",
+        "Please note that it is essential to reference the summarized versions of the YouTube videos available at [Summarize.tech](https://www.summarize.tech/) as they provide an overview of the content and serve as a starting point for your experiments.\n",
+        "\n",
+        "Your assignment should reflect your ability to replicate and creatively extend the experiments, as well as your capacity to document and present your work effectively. Please feel free to reach out if you encounter any issues with the Colab notebooks that require minor adjustments.\n",
+        "\n",
+        "### References Used\n",
+        "1. [A Hackers' Guide to Language Models](https://www.youtube.com/watch?v=jkrNMKz9pWU): This video showcases various experiments using LLMs.\n",
+        "2. [A hacker's guide to open source LLMs - posit::conf(2023)](https://www.youtube.com/watch?v=sYliwvml9Es): This video provides additional insights into LLMs.\n",
+        "3. [Summary of A Hackers' Guide to Language Models](https://www.summarize.tech/www.youtube.com/watch?v=jkrNMKz9pWU): Summarized version video titled \"A Hackers' Guide to Language Models\".\n",
+        "4. [Summary of A hacker's guide to open source LLMs - posit::conf(2023)](https://www.summarize.tech/www.youtube.com/watch?v=sYliwvml9Es): Summarized version of video titled \"Summary of A hacker's guide to open source LLMs - posit::conf(2023)\".\n",
+        "5. [Hugging Face Datasets](https://huggingface.co/knowrohit07): Alternative datasets for experiments."
+      ],
+      "metadata": {
+        "id": "lXUyT_ogVIZ6"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [],
+      "metadata": {
+        "id": "VZLWtWxedbu5"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "### Setup"
+      ],
+      "metadata": {
+        "id": "jS7avoUcYaOK"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "!pip install openai==0.28.0"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "cWefJQ1ckWqC",
+        "outputId": "a8c86139-1cdc-4a2b-d8d4-d46928ea5f0a"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Requirement already satisfied: openai==0.28.0 in /usr/local/lib/python3.10/dist-packages (0.28.0)\n",
+            "Requirement already satisfied: requests>=2.20 in /usr/local/lib/python3.10/dist-packages (from openai==0.28.0) (2.31.0)\n",
+            "Requirement already satisfied: tqdm in /usr/local/lib/python3.10/dist-packages (from openai==0.28.0) (4.66.2)\n",
+            "Requirement already satisfied: aiohttp in /usr/local/lib/python3.10/dist-packages (from openai==0.28.0) (3.9.3)\n",
+            "Requirement already satisfied: charset-normalizer<4,>=2 in /usr/local/lib/python3.10/dist-packages (from requests>=2.20->openai==0.28.0) (3.3.2)\n",
+            "Requirement already satisfied: idna<4,>=2.5 in /usr/local/lib/python3.10/dist-packages (from requests>=2.20->openai==0.28.0) (3.6)\n",
+            "Requirement already satisfied: urllib3<3,>=1.21.1 in /usr/local/lib/python3.10/dist-packages (from requests>=2.20->openai==0.28.0) (2.0.7)\n",
+            "Requirement already satisfied: certifi>=2017.4.17 in /usr/local/lib/python3.10/dist-packages (from requests>=2.20->openai==0.28.0) (2024.2.2)\n",
+            "Requirement already satisfied: aiosignal>=1.1.2 in /usr/local/lib/python3.10/dist-packages (from aiohttp->openai==0.28.0) (1.3.1)\n",
+            "Requirement already satisfied: attrs>=17.3.0 in /usr/local/lib/python3.10/dist-packages (from aiohttp->openai==0.28.0) (23.2.0)\n",
+            "Requirement already satisfied: frozenlist>=1.1.1 in /usr/local/lib/python3.10/dist-packages (from aiohttp->openai==0.28.0) (1.4.1)\n",
+            "Requirement already satisfied: multidict<7.0,>=4.5 in /usr/local/lib/python3.10/dist-packages (from aiohttp->openai==0.28.0) (6.0.5)\n",
+            "Requirement already satisfied: yarl<2.0,>=1.0 in /usr/local/lib/python3.10/dist-packages (from aiohttp->openai==0.28.0) (1.9.4)\n",
+            "Requirement already satisfied: async-timeout<5.0,>=4.0 in /usr/local/lib/python3.10/dist-packages (from aiohttp->openai==0.28.0) (4.0.3)\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "from google.colab import userdata\n",
+        "userdata.get('OPENAI_API_KEY')"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 36
+        },
+        "id": "9mfeaai0kon8",
+        "outputId": "48450a8d-babb-412e-d37b-bbd4c12c040c"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "'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'"
+            ],
+            "application/vnd.google.colaboratory.intrinsic+json": {
+              "type": "string"
+            }
+          },
+          "metadata": {},
+          "execution_count": 47
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "import tokenize, ast\n",
+        "from io import BytesIO"
+      ],
+      "metadata": {
+        "id": "vBCX-4BbZDKt"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "import openai\n",
+        "api_key = userdata.get('OPENAI_API_KEY')"
+      ],
+      "metadata": {
+        "id": "RHxCSEDhkroP"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "openai.api_key = api_key"
+      ],
+      "metadata": {
+        "id": "2pylWxKU_gZW"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "from pydantic import create_model\n",
+        "import inspect, json\n",
+        "from inspect import Parameter\n",
+        "from openai import ChatCompletion,Completion\n"
+      ],
+      "metadata": {
+        "id": "JaYdwrRZaeFI"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "### The OpenAI API"
+      ],
+      "metadata": {
+        "id": "ZTlPkB6QYjiw"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "##### Function Declarations"
+      ],
+      "metadata": {
+        "id": "BWmDW3EAaMMn"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "def response(compl): print(c.choices[0].message.content)"
+      ],
+      "metadata": {
+        "id": "9CqN8VtdaLqg"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "def get_content_only(result):\n",
+        "  return result.choices[0].message.content"
+      ],
+      "metadata": {
+        "id": "YK60WAF5aHfk"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "def askgpt(user, system=None, model=\"gpt-3.5-turbo\", **kwargs):\n",
+        "    msgs = []\n",
+        "    if system: msgs.append({\"role\": \"system\", \"content\": system})\n",
+        "    msgs.append({\"role\": \"user\", \"content\": user})\n",
+        "    return ChatCompletion.create(model=model, messages=msgs, **kwargs)"
+      ],
+      "metadata": {
+        "id": "s0bfLxwRaHdP"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "def call_api(prompt, model=\"gpt-3.5-turbo\"):\n",
+        "    msgs = [{\"role\": \"user\", \"content\": prompt}]\n",
+        "    try: return client.chat.completions.create(model=model, messages=msgs)\n",
+        "    except openai.error.RateLimitError as e:\n",
+        "        retry_after = int(e.headers.get(\"retry-after\", 60))\n",
+        "        print(f\"Rate limit exceeded, waiting for {retry_after} seconds...\")\n",
+        "        time.sleep(retry_after)\n",
+        "        return call_api(params, model=model)"
+      ],
+      "metadata": {
+        "id": "qq2CnUvkaHap"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "def sums(a:int, b:int=1):\n",
+        "    \"Adds a + b\"\n",
+        "    return a + b"
+      ],
+      "metadata": {
+        "id": "4EiFSptLaafu"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "def XOR(a:int, b:int):\n",
+        "    \"XOR of a and b\"\n",
+        "    return a ^ b"
+      ],
+      "metadata": {
+        "id": "QwdumooiABp_"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "def schema(f):\n",
+        "    kw = {n:(o.annotation, ... if o.default==Parameter.empty else o.default)\n",
+        "          for n,o in inspect.signature(f).parameters.items()}\n",
+        "    s = create_model(f'Input for `{f.__name__}`', **kw).schema()\n",
+        "    return dict(name=f.__name__, description=f.__doc__, parameters=s)"
+      ],
+      "metadata": {
+        "id": "zmNvaKJWaadX"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "def call_func(c):\n",
+        "    fc = c.choices[0].message.function_call\n",
+        "    if fc.name not in funcs_ok: return print(f'Not allowed: {fc.name}')\n",
+        "    f = globals()[fc.name]\n",
+        "    return f(**json.loads(fc.arguments))"
+      ],
+      "metadata": {
+        "id": "uOLPkFBraaaw"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "def run(code):\n",
+        "    tree = ast.parse(code)\n",
+        "    last_node = tree.body[-1] if tree.body else None\n",
+        "\n",
+        "    # If the last node is an expression, modify the AST to capture the result\n",
+        "    if isinstance(last_node, ast.Expr):\n",
+        "        tgts = [ast.Name(id='_result', ctx=ast.Store())]\n",
+        "        assign = ast.Assign(targets=tgts, value=last_node.value)\n",
+        "        tree.body[-1] = ast.fix_missing_locations(assign)\n",
+        "\n",
+        "    ns = {}\n",
+        "    exec(compile(tree, filename='<ast>', mode='exec'), ns)\n",
+        "    return ns.get('_result', None)"
+      ],
+      "metadata": {
+        "id": "bH4iD0z5aaYa"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "def python(code:str):\n",
+        "    return run(code)"
+      ],
+      "metadata": {
+        "id": "gfA3wl-FaspX"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "jp-MarkdownHeadingCollapsed": true,
+        "id": "98e86e7d-64f0-411d-bfce-289b06174dd4"
+      },
+      "source": [
+        "#### Code Interpretter"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "d9af1e46-c560-4bc9-a6a7-78fafb2dfc78",
+        "outputId": "fdc23562-40ad-44f7-ab24-2029e991643f",
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        }
+      },
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "{'name': 'sums',\n",
+              " 'description': 'Adds a + b',\n",
+              " 'parameters': {'properties': {'a': {'title': 'A', 'type': 'integer'},\n",
+              "   'b': {'default': 1, 'title': 'B', 'type': 'integer'}},\n",
+              "  'required': ['a'],\n",
+              "  'title': 'Input for `sums`',\n",
+              "  'type': 'object'}}"
+            ]
+          },
+          "metadata": {},
+          "execution_count": 62
+        }
+      ],
+      "source": [
+        "schema(sums)"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "1d60dcd4-514f-4efd-8b4a-fafac92c7453",
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 353
+        },
+        "outputId": "eee55f7b-5619-490b-82ee-85b7c5e173fe"
+      },
+      "outputs": [
+        {
+          "output_type": "error",
+          "ename": "RateLimitError",
+          "evalue": "You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.",
+          "traceback": [
+            "\u001b[0;31m---------------------------------------------------------------------------\u001b[0m",
+            "\u001b[0;31mRateLimitError\u001b[0m                            Traceback (most recent call last)",
+            "\u001b[0;32m<ipython-input-63-1a5d4f093078>\u001b[0m in \u001b[0;36m<cell line: 1>\u001b[0;34m()\u001b[0m\n\u001b[0;32m----> 1\u001b[0;31m c = askgpt(\"Use the `sum` function to solve this: What is 6+3?\",\n\u001b[0m\u001b[1;32m      2\u001b[0m            \u001b[0msystem\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0;34m\"You must use the `sum` function instead of adding yourself.\"\u001b[0m\u001b[0;34m,\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m      3\u001b[0m            functions=[schema(sums)])\n",
+            "\u001b[0;32m<ipython-input-54-406174ff88a1>\u001b[0m in \u001b[0;36maskgpt\u001b[0;34m(user, system, model, **kwargs)\u001b[0m\n\u001b[1;32m      3\u001b[0m     \u001b[0;32mif\u001b[0m \u001b[0msystem\u001b[0m\u001b[0;34m:\u001b[0m \u001b[0mmsgs\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mappend\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m{\u001b[0m\u001b[0;34m\"role\"\u001b[0m\u001b[0;34m:\u001b[0m \u001b[0;34m\"system\"\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0;34m\"content\"\u001b[0m\u001b[0;34m:\u001b[0m \u001b[0msystem\u001b[0m\u001b[0;34m}\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m      4\u001b[0m     \u001b[0mmsgs\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mappend\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m{\u001b[0m\u001b[0;34m\"role\"\u001b[0m\u001b[0;34m:\u001b[0m \u001b[0;34m\"user\"\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0;34m\"content\"\u001b[0m\u001b[0;34m:\u001b[0m \u001b[0muser\u001b[0m\u001b[0;34m}\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m----> 5\u001b[0;31m     \u001b[0;32mreturn\u001b[0m \u001b[0mChatCompletion\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mcreate\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mmodel\u001b[0m\u001b[0;34m=\u001b[0m\u001b[0mmodel\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mmessages\u001b[0m\u001b[0;34m=\u001b[0m\u001b[0mmsgs\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0;34m**\u001b[0m\u001b[0mkwargs\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m",
+            "\u001b[0;32m/usr/local/lib/python3.10/dist-packages/openai/api_resources/chat_completion.py\u001b[0m in \u001b[0;36mcreate\u001b[0;34m(cls, *args, **kwargs)\u001b[0m\n\u001b[1;32m     23\u001b[0m         \u001b[0;32mwhile\u001b[0m \u001b[0;32mTrue\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m     24\u001b[0m             \u001b[0;32mtry\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m---> 25\u001b[0;31m                 \u001b[0;32mreturn\u001b[0m \u001b[0msuper\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mcreate\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m*\u001b[0m\u001b[0margs\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0;34m**\u001b[0m\u001b[0mkwargs\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m     26\u001b[0m             \u001b[0;32mexcept\u001b[0m \u001b[0mTryAgain\u001b[0m \u001b[0;32mas\u001b[0m \u001b[0me\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m     27\u001b[0m                 \u001b[0;32mif\u001b[0m \u001b[0mtimeout\u001b[0m \u001b[0;32mis\u001b[0m \u001b[0;32mnot\u001b[0m \u001b[0;32mNone\u001b[0m \u001b[0;32mand\u001b[0m \u001b[0mtime\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mtime\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m)\u001b[0m \u001b[0;34m>\u001b[0m \u001b[0mstart\u001b[0m \u001b[0;34m+\u001b[0m \u001b[0mtimeout\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
+            "\u001b[0;32m/usr/local/lib/python3.10/dist-packages/openai/api_resources/abstract/engine_api_resource.py\u001b[0m in \u001b[0;36mcreate\u001b[0;34m(cls, api_key, api_base, api_type, request_id, api_version, organization, **params)\u001b[0m\n\u001b[1;32m    151\u001b[0m         )\n\u001b[1;32m    152\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m--> 153\u001b[0;31m         response, _, api_key = requestor.request(\n\u001b[0m\u001b[1;32m    154\u001b[0m             \u001b[0;34m\"post\"\u001b[0m\u001b[0;34m,\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    155\u001b[0m             \u001b[0murl\u001b[0m\u001b[0;34m,\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
+            "\u001b[0;32m/usr/local/lib/python3.10/dist-packages/openai/api_requestor.py\u001b[0m in \u001b[0;36mrequest\u001b[0;34m(self, method, url, params, headers, files, stream, request_id, request_timeout)\u001b[0m\n\u001b[1;32m    296\u001b[0m             \u001b[0mrequest_timeout\u001b[0m\u001b[0;34m=\u001b[0m\u001b[0mrequest_timeout\u001b[0m\u001b[0;34m,\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    297\u001b[0m         )\n\u001b[0;32m--> 298\u001b[0;31m         \u001b[0mresp\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mgot_stream\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0mself\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0m_interpret_response\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mresult\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mstream\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m    299\u001b[0m         \u001b[0;32mreturn\u001b[0m \u001b[0mresp\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mgot_stream\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mself\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mapi_key\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    300\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n",
+            "\u001b[0;32m/usr/local/lib/python3.10/dist-packages/openai/api_requestor.py\u001b[0m in \u001b[0;36m_interpret_response\u001b[0;34m(self, result, stream)\u001b[0m\n\u001b[1;32m    698\u001b[0m         \u001b[0;32melse\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    699\u001b[0m             return (\n\u001b[0;32m--> 700\u001b[0;31m                 self._interpret_response_line(\n\u001b[0m\u001b[1;32m    701\u001b[0m                     \u001b[0mresult\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mcontent\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mdecode\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m\"utf-8\"\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m,\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    702\u001b[0m                     \u001b[0mresult\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mstatus_code\u001b[0m\u001b[0;34m,\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
+            "\u001b[0;32m/usr/local/lib/python3.10/dist-packages/openai/api_requestor.py\u001b[0m in \u001b[0;36m_interpret_response_line\u001b[0;34m(self, rbody, rcode, rheaders, stream)\u001b[0m\n\u001b[1;32m    763\u001b[0m         \u001b[0mstream_error\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0mstream\u001b[0m \u001b[0;32mand\u001b[0m \u001b[0;34m\"error\"\u001b[0m \u001b[0;32min\u001b[0m \u001b[0mresp\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mdata\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    764\u001b[0m         \u001b[0;32mif\u001b[0m \u001b[0mstream_error\u001b[0m \u001b[0;32mor\u001b[0m \u001b[0;32mnot\u001b[0m \u001b[0;36m200\u001b[0m \u001b[0;34m<=\u001b[0m \u001b[0mrcode\u001b[0m \u001b[0;34m<\u001b[0m \u001b[0;36m300\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m--> 765\u001b[0;31m             raise self.handle_error_response(\n\u001b[0m\u001b[1;32m    766\u001b[0m                 \u001b[0mrbody\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mrcode\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mresp\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mdata\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mrheaders\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mstream_error\u001b[0m\u001b[0;34m=\u001b[0m\u001b[0mstream_error\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    767\u001b[0m             )\n",
+            "\u001b[0;31mRateLimitError\u001b[0m: You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors."
+          ]
+        }
+      ],
+      "source": [
+        "c = askgpt(\"Use the `sum` function to solve this: What is 6+3?\",\n",
+        "           system = \"You must use the `sum` function instead of adding yourself.\",\n",
+        "           functions=[schema(sums)])"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "5cc8a9eb-64fc-4ce3-9f93-aee334fc8c65",
+        "outputId": "5bfa6478-e62c-4d96-b991-aa888260ce1a",
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        }
+      },
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "<OpenAIObject at 0x7b1be070ac50> JSON: {\n",
+              "  \"role\": \"assistant\",\n",
+              "  \"content\": null,\n",
+              "  \"function_call\": {\n",
+              "    \"name\": \"sums\",\n",
+              "    \"arguments\": \"{\\\"a\\\":6,\\\"b\\\":3}\"\n",
+              "  }\n",
+              "}"
+            ]
+          },
+          "metadata": {},
+          "execution_count": 21
+        }
+      ],
+      "source": [
+        "m = c.choices[0].message\n",
+        "m"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "5a881835-83a2-4fbc-9796-409831dcdb36",
+        "outputId": "6f052673-396c-40a0-9e19-096741d7f78e",
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        }
+      },
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "{\"a\":6,\"b\":3}\n"
+          ]
+        }
+      ],
+      "source": [
+        "k = m.function_call.arguments\n",
+        "print(k)"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "3f32b172-7730-4c58-a999-5d3800e8c2a4"
+      },
+      "outputs": [],
+      "source": [
+        "funcs_ok = {'XOR', 'python'}"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "ce6be825-44fa-4bc9-a83a-7ecbcb6c2729",
+        "outputId": "9de75bea-d7dc-4cee-e589-cbf7a6305f6c",
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        }
+      },
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Not allowed: sums\n"
+          ]
+        }
+      ],
+      "source": [
+        "call_func(c)"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "37aa6983-d9af-40e8-b438-ed8573399020",
+        "outputId": "d77dcca4-0d7c-4f0a-a58a-f5db83d41013",
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        }
+      },
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "3"
+            ]
+          },
+          "metadata": {},
+          "execution_count": 25
+        }
+      ],
+      "source": [
+        "run(\"\"\"\n",
+        "a=1\n",
+        "b=2\n",
+        "a^b\n",
+        "\"\"\")"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "pWg-ITLMAnOm",
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 353
+        },
+        "outputId": "a4e8969a-bf02-488f-b4f9-6ad733efecbd"
+      },
+      "outputs": [
+        {
+          "output_type": "error",
+          "ename": "AuthenticationError",
+          "evalue": "Incorrect API key provided: sk-oaFhw***************************************UnGU. You can find your API key at https://platform.openai.com/account/api-keys.",
+          "traceback": [
+            "\u001b[0;31m---------------------------------------------------------------------------\u001b[0m",
+            "\u001b[0;31mAuthenticationError\u001b[0m                       Traceback (most recent call last)",
+            "\u001b[0;32m<ipython-input-27-72e3bee3f093>\u001b[0m in \u001b[0;36m<cell line: 1>\u001b[0;34m()\u001b[0m\n\u001b[0;32m----> 1\u001b[0;31m c = askgpt(\"Use the `XOR` function to solve this: What is 15^32?\",\n\u001b[0m\u001b[1;32m      2\u001b[0m            \u001b[0msystem\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0;34m\"You must use the `XOR` function instead of dividing yourself.\"\u001b[0m\u001b[0;34m,\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m      3\u001b[0m            functions=[schema(XOR)])\n",
+            "\u001b[0;32m<ipython-input-11-406174ff88a1>\u001b[0m in \u001b[0;36maskgpt\u001b[0;34m(user, system, model, **kwargs)\u001b[0m\n\u001b[1;32m      3\u001b[0m     \u001b[0;32mif\u001b[0m \u001b[0msystem\u001b[0m\u001b[0;34m:\u001b[0m \u001b[0mmsgs\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mappend\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m{\u001b[0m\u001b[0;34m\"role\"\u001b[0m\u001b[0;34m:\u001b[0m \u001b[0;34m\"system\"\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0;34m\"content\"\u001b[0m\u001b[0;34m:\u001b[0m \u001b[0msystem\u001b[0m\u001b[0;34m}\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m      4\u001b[0m     \u001b[0mmsgs\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mappend\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m{\u001b[0m\u001b[0;34m\"role\"\u001b[0m\u001b[0;34m:\u001b[0m \u001b[0;34m\"user\"\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0;34m\"content\"\u001b[0m\u001b[0;34m:\u001b[0m \u001b[0muser\u001b[0m\u001b[0;34m}\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m----> 5\u001b[0;31m     \u001b[0;32mreturn\u001b[0m \u001b[0mChatCompletion\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mcreate\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mmodel\u001b[0m\u001b[0;34m=\u001b[0m\u001b[0mmodel\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mmessages\u001b[0m\u001b[0;34m=\u001b[0m\u001b[0mmsgs\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0;34m**\u001b[0m\u001b[0mkwargs\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m",
+            "\u001b[0;32m/usr/local/lib/python3.10/dist-packages/openai/api_resources/chat_completion.py\u001b[0m in \u001b[0;36mcreate\u001b[0;34m(cls, *args, **kwargs)\u001b[0m\n\u001b[1;32m     23\u001b[0m         \u001b[0;32mwhile\u001b[0m \u001b[0;32mTrue\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m     24\u001b[0m             \u001b[0;32mtry\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m---> 25\u001b[0;31m                 \u001b[0;32mreturn\u001b[0m \u001b[0msuper\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mcreate\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m*\u001b[0m\u001b[0margs\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0;34m**\u001b[0m\u001b[0mkwargs\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m     26\u001b[0m             \u001b[0;32mexcept\u001b[0m \u001b[0mTryAgain\u001b[0m \u001b[0;32mas\u001b[0m \u001b[0me\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m     27\u001b[0m                 \u001b[0;32mif\u001b[0m \u001b[0mtimeout\u001b[0m \u001b[0;32mis\u001b[0m \u001b[0;32mnot\u001b[0m \u001b[0;32mNone\u001b[0m \u001b[0;32mand\u001b[0m \u001b[0mtime\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mtime\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m)\u001b[0m \u001b[0;34m>\u001b[0m \u001b[0mstart\u001b[0m \u001b[0;34m+\u001b[0m \u001b[0mtimeout\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
+            "\u001b[0;32m/usr/local/lib/python3.10/dist-packages/openai/api_resources/abstract/engine_api_resource.py\u001b[0m in \u001b[0;36mcreate\u001b[0;34m(cls, api_key, api_base, api_type, request_id, api_version, organization, **params)\u001b[0m\n\u001b[1;32m    151\u001b[0m         )\n\u001b[1;32m    152\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m--> 153\u001b[0;31m         response, _, api_key = requestor.request(\n\u001b[0m\u001b[1;32m    154\u001b[0m             \u001b[0;34m\"post\"\u001b[0m\u001b[0;34m,\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    155\u001b[0m             \u001b[0murl\u001b[0m\u001b[0;34m,\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
+            "\u001b[0;32m/usr/local/lib/python3.10/dist-packages/openai/api_requestor.py\u001b[0m in \u001b[0;36mrequest\u001b[0;34m(self, method, url, params, headers, files, stream, request_id, request_timeout)\u001b[0m\n\u001b[1;32m    296\u001b[0m             \u001b[0mrequest_timeout\u001b[0m\u001b[0;34m=\u001b[0m\u001b[0mrequest_timeout\u001b[0m\u001b[0;34m,\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    297\u001b[0m         )\n\u001b[0;32m--> 298\u001b[0;31m         \u001b[0mresp\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mgot_stream\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0mself\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0m_interpret_response\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mresult\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mstream\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m    299\u001b[0m         \u001b[0;32mreturn\u001b[0m \u001b[0mresp\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mgot_stream\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mself\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mapi_key\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    300\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n",
+            "\u001b[0;32m/usr/local/lib/python3.10/dist-packages/openai/api_requestor.py\u001b[0m in \u001b[0;36m_interpret_response\u001b[0;34m(self, result, stream)\u001b[0m\n\u001b[1;32m    698\u001b[0m         \u001b[0;32melse\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    699\u001b[0m             return (\n\u001b[0;32m--> 700\u001b[0;31m                 self._interpret_response_line(\n\u001b[0m\u001b[1;32m    701\u001b[0m                     \u001b[0mresult\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mcontent\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mdecode\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m\"utf-8\"\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m,\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    702\u001b[0m                     \u001b[0mresult\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mstatus_code\u001b[0m\u001b[0;34m,\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
+            "\u001b[0;32m/usr/local/lib/python3.10/dist-packages/openai/api_requestor.py\u001b[0m in \u001b[0;36m_interpret_response_line\u001b[0;34m(self, rbody, rcode, rheaders, stream)\u001b[0m\n\u001b[1;32m    763\u001b[0m         \u001b[0mstream_error\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0mstream\u001b[0m \u001b[0;32mand\u001b[0m \u001b[0;34m\"error\"\u001b[0m \u001b[0;32min\u001b[0m \u001b[0mresp\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mdata\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    764\u001b[0m         \u001b[0;32mif\u001b[0m \u001b[0mstream_error\u001b[0m \u001b[0;32mor\u001b[0m \u001b[0;32mnot\u001b[0m \u001b[0;36m200\u001b[0m \u001b[0;34m<=\u001b[0m \u001b[0mrcode\u001b[0m \u001b[0;34m<\u001b[0m \u001b[0;36m300\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m--> 765\u001b[0;31m             raise self.handle_error_response(\n\u001b[0m\u001b[1;32m    766\u001b[0m                 \u001b[0mrbody\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mrcode\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mresp\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mdata\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mrheaders\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mstream_error\u001b[0m\u001b[0;34m=\u001b[0m\u001b[0mstream_error\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    767\u001b[0m             )\n",
+            "\u001b[0;31mAuthenticationError\u001b[0m: Incorrect API key provided: sk-oaFhw***************************************UnGU. You can find your API key at https://platform.openai.com/account/api-keys."
+          ]
+        }
+      ],
+      "source": [
+        "c = askgpt(\"Use the `XOR` function to solve this: What is 15^32?\",\n",
+        "           system = \"You must use the `XOR` function instead of dividing yourself.\",\n",
+        "           functions=[schema(XOR)])"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "outputId": "94720ad8-5e76-4dd3-ccd5-c0ec36e2ea27",
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "dGRGzrFQAnOm"
+      },
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "<OpenAIObject at 0x7ee86c933c40> JSON: {\n",
+              "  \"role\": \"assistant\",\n",
+              "  \"content\": null,\n",
+              "  \"function_call\": {\n",
+              "    \"name\": \"divide\",\n",
+              "    \"arguments\": \"{\\\"a\\\":72,\\\"b\\\":9}\"\n",
+              "  }\n",
+              "}"
+            ]
+          },
+          "metadata": {},
+          "execution_count": 26
+        }
+      ],
+      "source": [
+        "m = c.choices[0].message\n",
+        "m"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "outputId": "9e56a1d8-bba3-4415-a472-b541402c043d",
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "PzWIb940AnOm"
+      },
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "{\"a\":72,\"b\":9}\n"
+          ]
+        }
+      ],
+      "source": [
+        "k = m.function_call.arguments\n",
+        "print(k)"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "tuy6EIyWAnOm"
+      },
+      "outputs": [],
+      "source": [
+        "funcs_ok = {'sums', 'XOR', 'python'}"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "outputId": "8e8a70bd-d433-45f6-c296-b63a204adf4a",
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "DGktE6GcAnOn"
+      },
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "8.0"
+            ]
+          },
+          "metadata": {},
+          "execution_count": 29
+        }
+      ],
+      "source": [
+        "call_func(c)"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "outputId": "3b2ccddb-8b8e-45be-ee08-d315caa7f5a5",
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "gI415ackAnOn"
+      },
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "8.0"
+            ]
+          },
+          "metadata": {},
+          "execution_count": 30
+        }
+      ],
+      "source": [
+        "run(\"\"\"\n",
+        "a=14\n",
+        "b=30\n",
+        "a^b\n",
+        "\"\"\")"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [],
+      "metadata": {
+        "id": "lsLvlc7fIfp-"
+      },
+      "execution_count": null,
+      "outputs": []
+    }
+  ]
+}
