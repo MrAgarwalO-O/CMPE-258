@@ -5,6 +5,10 @@
 
 This assignment is designed to explore the implementation of deep learning models for non-linear regression tasks using various frameworks including Numpy, PyTorch, TensorFlow, and JAX. It focuses on constructing a three-layer neural network from scratch. The task requires an understanding of manual backpropagation, chain rule-based gradient propagation, and the utilization of TensorFlow's `einsum` for matrix operations, aiming for a deeper understanding of neural network internals.
 
+
+Demo Video Link - https://drive.google.com/file/d/1XBpVOYAi8pKpaC0ObP2L5V8QggUnUDxt/view?usp=sharing
+
+
 ## Assignment Description
 
 ### Objective
