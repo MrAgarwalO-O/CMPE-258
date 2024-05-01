@@ -74,6 +74,7 @@ xi) Custom Training Loop (see 13 section for fashion mnist in above link)
 
 1. Neural networks with Keras-Part1.ipynb
 2. Neural networks with Keras-Part2.ipynb
+3. Demo Video - https://drive.google.com/file/d/1OIiTQ7k1cRZ3Un1WnpEOpqLafGXofGkm/view?usp=sharing
 
 
 ## References Used
